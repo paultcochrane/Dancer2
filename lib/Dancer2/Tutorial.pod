@@ -227,6 +227,69 @@ We even have a test suite, which we can run like so:
 
 And the tests pass! How cool is that?!
 
+=head1 Our first Git commit
+
+It'd be great to be able to save the current state of our project so that we
+can return to it at some point in the future, if necessary. This is one of
+the many great advantages of a version control system: it's possible to go
+"back in time" to previous versions (and thus states) of a project, which
+can be really handy if, for example, you've made an error and want to go
+back to the last good version.
+
+We'll now turn our C<Dancr/> directory into a Git repository (or simply
+"repo", for short). Doing this in Git is very easy:
+
+    $ git init
+    Initialized empty Git repository in .../Dancr/.git/
+
+That's it! Now we just need to add the files that the C<dancer2> command
+created for us. This too, is really simple:
+
+    $ git add .
+
+Now Git knows to track the files in our C<Dancr/> project. To save the
+current state of the repository, we need to I<commit> our changes (which in
+our case was the addition of the project files). This we do like so:
+
+    $ git commit -m "Initial import of Dancr project files"
+    [master (root-commit) af8cc34] Initial import of Dancr project files
+     22 files changed, 675 insertions(+)
+     create mode 100644 MANIFEST
+     create mode 100644 MANIFEST.SKIP
+     create mode 100644 Makefile.PL
+     create mode 100755 bin/app.pl
+     create mode 100644 config.yml
+     create mode 100644 environments/development.yml
+     create mode 100644 environments/production.yml
+     create mode 100644 lib/Dancr.pm
+     create mode 100644 public/404.html
+     create mode 100644 public/500.html
+     create mode 100644 public/css/error.css
+     create mode 100644 public/css/style.css
+     create mode 100755 public/dispatch.cgi
+     create mode 100755 public/dispatch.fcgi
+     create mode 100644 public/favicon.ico
+     create mode 100644 public/images/perldancer-bg.jpg
+     create mode 100644 public/images/perldancer.jpg
+     create mode 100644 public/javascripts/jquery.js
+     create mode 100644 t/001_base.t
+     create mode 100644 t/002_index_route.t
+     create mode 100644 views/index.tt
+     create mode 100644 views/layouts/main.tt
+
+The C<-m> option to the C<git commit> command allows us to specify a commit
+I<message> describing what the changes to the repository are. Make your
+commit messages descriptive! You are writing a message to yourself in the
+future, so be nice to your future self :-) If you ommit the C<-m> option,
+then an editor will be automatically started for you to enter the commit
+message. In most cases this is the best way to enter commit messages.
+
+One can display old commit messages by using the C<git log> command. For
+this project the log isn't particularly interesting (it contains only one
+commit), however this is one of the fastest ways to see what has happened in
+a project and to track down possible problems. Another good reason to make
+your commit messages clear and descriptive!
+
 =head1 The database
 
 We're not going to spend a lot of time on the database, as it's not really
