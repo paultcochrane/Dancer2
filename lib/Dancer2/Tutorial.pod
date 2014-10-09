@@ -23,21 +23,22 @@ an anonymous subroutine which returns the string C<"Hello World!">  If you
 were to run this example, it would display "Hello World!" when you point
 your browser at L<http://localhost:3000>.
 
-=head1 How about a little more involved example?
+=head1 How about a more involved example?
 
-That's the reason I wrote this tutorial.  While I was investigating some
-Python web frameworks like L<Flask|http://flask.pocoo.org/> or
-L<Bottle|http://bottle.paws.de/docs/dev/index.html> I enjoyed the way they
-explained step by step how to build an example application which was a
-little more involved than a trivial example.
+Simple examples - although able to quickly show off essential features -
+don't often give the user enough material in order to create a basic,
+nevertheless full-fledged application. That's the reason for this tutorial.
+Web frameworks such as L<Flask|http://flask.pocoo.org/> or
+L<Bottle|http://bottle.paws.de/docs/dev/index.html> examine nicely in a
+step-by-step manner how to build a basic application which is more involved
+than a trivial example.
 
-Using the
-L<Flaskr|http://github.com/mitsuhiko/flask/tree/master/examples/flaskr/>
-sample application as my inspiration (OK, shamelessly plagiarised) I
-translated that application to the Dancer2 framework so I could better
-understand how Dancer2 worked. (I'm learning it too!)
+In this tutorial we'll build a sample "micro" blog application, based
+heavily on the sample application
+L<Flaskr|http://github.com/mitsuhiko/flask/tree/master/examples/flaskr/>,
+however instead of using Flask to build I<Flaskr>, we'll use Dancer2 to
+build I<Dancr>.
 
-So "Dancr" was born.
 
 Dancr is a simple "micro" blog which uses the
 L<SQLite|http://www.sqlite.org> database engine for simplicity's sake.
