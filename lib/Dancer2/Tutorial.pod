@@ -39,10 +39,128 @@ L<Flaskr|http://github.com/mitsuhiko/flask/tree/master/examples/flaskr/>,
 however instead of using Flask to build I<Flaskr>, we'll use Dancer2 to
 build I<Dancr>.
 
+=head1 Required software
 
-Dancr is a simple "micro" blog which uses the
-L<SQLite|http://www.sqlite.org> database engine for simplicity's sake.
-(You'll need to install sqlite if you don't have it installed already.)
+To follow along with this tutorial we're going to need some supporting
+software. Also, we're going to assume a (Debian) Linux system. If you're on
+another version of Linux, another version of Unix, or even on MacOSX or
+Windows, hopefully you'll be able to follow along ok.
+
+=head2 Git
+
+One of the most important tools in any software project is a version control
+system, and here we're going to be using L<Git|http://git-scm.org>. For a
+great introduction to Git - and for details about its usage - the
+L<Git-book|http://git-book-url> by Scott Chacon is highly recommended. One
+can of course download and build Git from source, but it's much easier to
+simply install the relevant package:
+
+    $ sudo aptitude install git
+
+=head2 Sqlite
+
+Our micro blog will need a database engine to store blog entries and for
+this purpose we choose L<SQLite|http://www.sqlite.org> for its simplicity
+and small resource requirements.
+
+    $ sudo aptitude install sqlite
+
+=head2 Perl software and modules
+
+=head3 perlbrew
+
+The Debian system Perl maintainers have been doing a sterling job recently
+of keeping up with Perl development and thus if you're using Debian, the
+Perl version which came with your distribution is likely the most recent
+stable release. However, if you're not so lucky and you wish to use a recent
+Perl, you can install L<perlbrew|http://add-url-here> and build your own.
+Another advantage of C<perlbrew> is that you can install Perl modules in
+your home directory without having to ask your system administrator to
+install them, or (if you are the admin) without having to "pollute" the
+module namespace in your system directories. Because it is such and
+advantage that we can install our own modules without influencing other
+users on the system, we'll install C<perlbrew> and our very own version of
+Perl. This will take a while, but be patient! It's worth it!
+
+First install C<perlbrew>
+
+    $ sudo aptitude install perlbrew
+
+Initialize C<perlbrew> with its C<init> command (you only need to do this
+once):
+
+    $ perlbrew init
+
+A C<perl5/> directory will now have been created in your home directory, and
+it is within this directory structure that the our new Perl version (and its
+modules) will be installed. We can see which Perls are available with
+C<perlbrew>'s C<available> command:
+
+    $ perlbrew available
+    ... more output ...
+
+Let's select C<perl-5.20.1> (current Perl stable version as of writing) and
+install that:
+
+    $ perlbrew install perl-5.20.1
+
+And now wait a while until Perl is installed. You can follow along with the
+progress of the installation and test process by using the C<tail> command
+mentioned after having entered C<perlbrew install>.
+
+=head3 cpanm
+
+Once your freshly-brewed Perl has been built and installed it's time to
+install L<cpanm|http://add-url-here> which is a very handy program used to
+install Perl modules. To install C<cpanm> simply run the following
+C<perlbrew> command:
+
+    $ perlbrew install-cpanm
+
+Running the command C<which cpanm> should now show C<cpanm> to be installed
+inside your C<~/perl5/> directory:
+
+    $ which cpanm
+    <your-home-directory>/perl5/perlbrew/bin/cpanm
+
+We're now ready to install Dancer2 and its dependencies!
+
+=head3 Dancer2 installation
+
+With lots of our supporting software in place, things just get easier and
+easier. You can now install Dancer2 by simply running:
+
+    $ cpanm Dancer2
+
+=head3 Dancer2 dependencies
+
+Lastly, we need to install the Perl modules which Dancer2 needs to use:
+
+=over 4
+
+=item Template Toolkit
+
+The L<Template Toolkit|Template> is a set of Perl modules which collectively
+implement a template processing system. We'll use this to reduce unnecessary
+HTML coding in our micro blog.
+
+=item File::Slurp
+
+Simple and efficient reading, writing or modifying of complete files.
+
+=item DBD::SQLite
+
+The SQLite backend for the Perl database interface. This allows us to
+interact with our SQLite installation directly from Perl.
+
+=back
+
+To install these dependencies, simply run this command:
+
+    $ cpanm Template File::Slurp DBD::SQLite
+
+Now we have all of the required software in place to create our app!
+
 
 =head1 Required perl modules
 
