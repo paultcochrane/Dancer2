@@ -162,13 +162,7 @@ To install these dependencies, simply run this command:
 Now we have all of the required software in place to create our app!
 
 
-=head1 Required perl modules
 
-Obviously you need L<Dancer2>.  You also need the L<Template
-Toolkit|Template>, L<File::Slurp>, and L<DBD::SQLite>.  These all can be
-installed using your CPAN client, as in:
-
-  cpan Dancer2 Template File::Slurp DBD::SQLite
 
 =head1 The database
 
