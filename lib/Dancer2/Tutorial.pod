@@ -161,8 +161,71 @@ To install these dependencies, simply run this command:
 
 Now we have all of the required software in place to create our app!
 
+=head1 Create the Dancr project
 
+Dancer2 comes with a command line interface: C<dancer2>. This program can be
+used to create a new Dancer2 project. We could spend a lot of time setting
+up directories and making sure we've got everything right, but it's I<much>
+easier to use the helper program. Simply call C<dancer2> with the
+C<--application> command line option (which specifies the name of the app to
+be created):
 
+    $ dancer2 --application Dancr
+    + Dancr
+    + Dancr/MANIFEST.SKIP
+    + Dancr/Makefile.PL
+    + Dancr/config.yml
+    + Dancr/t
+    + Dancr/t/002_index_route.t
+    + Dancr/t/001_base.t
+    + Dancr/lib
+    + Dancr/lib/Dancr.pm
+    + Dancr/public
+    + Dancr/public/favicon.ico
+    + Dancr/public/500.html
+    + Dancr/public/dispatch.fcgi
+    + Dancr/public/dispatch.cgi
+    + Dancr/public/404.html
+    + Dancr/public/javascripts
+    + Dancr/public/javascripts/jquery.js
+    + Dancr/public/css
+    + Dancr/public/css/error.css
+    + Dancr/public/css/style.css
+    + Dancr/public/images
+    + Dancr/public/images/perldancer.jpg
+    + Dancr/public/images/perldancer-bg.jpg
+    + Dancr/views
+    + Dancr/views/index.tt
+    + Dancr/views/layouts
+    + Dancr/views/layouts/main.tt
+    + Dancr/bin
+    + Dancr/bin/app.pl
+    + Dancr/environments
+    + Dancr/environments/production.yml
+    + Dancr/environments/development.yml
+
+As the output shows, several directories and files have been automatically
+created for us. We can see our app in action straight away, by simply
+calling
+
+    $ perl -Ilib bin/app.pl
+
+and then pointing a web browser at C<http://0.0.0.0:3000> (port 3000 on the
+localhost).
+
+We even have a test suite, which we can run like so:
+
+    $ prove -lr t
+    t/001_base.t ......... ok
+    t/002_index_route.t .. 1/2 [Dancr:9068]  core @2014-10-09 11:55:51> looking for get / in .../Plack/Middleware/Head.pm l. 9
+    [Dancr:9068]  core @2014-10-09 11:55:51> Entering hook core.app.before_request in .../Dancer2/Core/App.pm l. 1136
+    [Dancr:9068]  core @2014-10-09 11:55:51> Entering hook core.app.after_request in .../Dancer2/Core/App.pm l. 1079
+    t/002_index_route.t .. ok
+    All tests successful.
+    Files=2, Tests=3,  1 wallclock secs ( 0.02 usr  0.01 sys +  0.40 cusr  0.02 csys =  0.45 CPU)
+    Result: PASS
+
+And the tests pass! How cool is that?!
 
 =head1 The database
 
