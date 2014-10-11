@@ -209,7 +209,7 @@ As the output shows, several directories and files have been automatically
 created for us. We can see our app in action straight away, by simply
 calling
 
-    $ perl -Ilib bin/app.pl
+    $ perl bin/app.pl
 
 and then pointing a web browser at C<http://0.0.0.0:3000> (port 3000 on the
 localhost).
