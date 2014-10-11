@@ -49,11 +49,11 @@ Windows, hopefully you'll be able to follow along ok.
 =head2 Git
 
 One of the most important tools in any software project is a version control
-system, and here we're going to be using L<Git|http://git-scm.org>. For a
+system, and here we're going to be using L<Git|http://git-scm.com/>. For a
 great introduction to Git - and for details about its usage - the
-L<Git-book|http://git-book-url> by Scott Chacon is highly recommended. One
-can of course download and build Git from source, but it's much easier to
-simply install the relevant package:
+L<Git-book|http://git-scm.com/book/> by Scott Chacon is highly recommended.
+One can of course download and build Git from source, but it's much easier
+to simply install the relevant package:
 
     $ sudo aptitude install git
 
@@ -73,7 +73,7 @@ The Debian system Perl maintainers have been doing a sterling job recently
 of keeping up with Perl development and thus if you're using Debian, the
 Perl version which came with your distribution is likely the most recent
 stable release. However, if you're not so lucky and you wish to use a recent
-Perl, you can install L<perlbrew|http://add-url-here> and build your own.
+Perl, you can install L<perlbrew|http://perlbrew.pl/> and build your own.
 Another advantage of C<perlbrew> is that you can install Perl modules in
 your home directory without having to ask your system administrator to
 install them, or (if you are the admin) without having to "pollute" the
@@ -111,9 +111,10 @@ mentioned after having entered C<perlbrew install>.
 =head3 cpanm
 
 Once your freshly-brewed Perl has been built and installed it's time to
-install L<cpanm|http://add-url-here> which is a very handy program used to
-install Perl modules. To install C<cpanm> simply run the following
-C<perlbrew> command:
+install
+L<cpanm|http://metacpan.org/pod/distribution/App-cpanminus/bin/cpanm> which
+is a very handy program used to install Perl modules. To install C<cpanm>
+simply run the following C<perlbrew> command:
 
     $ perlbrew install-cpanm
 
