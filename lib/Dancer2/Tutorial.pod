@@ -291,6 +291,40 @@ commit), however this is one of the fastest ways to see what has happened in
 a project and to track down possible problems. Another good reason to make
 your commit messages clear and descriptive!
 
+=head1 The application we want to build
+
+Ok, enough about Git, let's get back to creating our micro blog. In case you
+don't know what a micro blog is, first, a quick explanation. Basically, this
+is just like a normal blog, except you can only create entries with a title
+and a short piece of text. In some ways very similar to Twitter except
+without pictures (real micro blogs also allow pictures to be embedded,
+however we're skipping that here to keep things a bit simpler).
+
+So what components do we need to build such an application? Well, we'll need
+a page where we can add new entries. This page will need a form in it with
+elements to let you enter the title and text of a blog entry. The entries
+will need to be stored somewhere, and a database is a logical and standard
+place to do this. We'll also probably need to add login/logout functionality
+so that we can stop unauthorized users from adding entries to our micro
+blog. Do we need all of these components up front? No. Let's get something
+running quickly by only implementing the form for adding blog entries.
+Afterwards we can add a database (so that we can display old blog entries)
+and then we can add authentication after that.
+
+But first, let's scratch a little itch. Did you notice that our app is
+currently called C<bin/app.pl>? Does that really describe the application
+we're building? No. Hence, let's change its name to something a bit more
+descriptive by using the C<git mv> (move/rename) command:
+
+    $ git mv bin/app.pl bin/dancr.pl
+
+Naturally this is also a change, so let's now commit that:
+
+    $ git commit -m "Using a more descriptive name for main script"
+    [master 721150e] Using a more descriptive name for main script
+     1 file changed, 0 insertions(+), 0 deletions(-)
+     rename bin/{app.pl => dancr.pl} (100%)
+
 =head1 The database
 
 Ok, enough about Git, let's get back to creating our micro blog. We need to
