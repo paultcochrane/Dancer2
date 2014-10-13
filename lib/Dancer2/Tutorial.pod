@@ -325,6 +325,74 @@ Naturally this is also a change, so let's now commit that:
      1 file changed, 0 insertions(+), 0 deletions(-)
      rename bin/{app.pl => dancr.pl} (100%)
 
+=head1 Creating the static application
+
+In a separate terminal window, start the application by running
+
+    $ perl bin/dancr.pl
+
+and point your browser to C<http://0.0.0.0:3000>. We can keep this process
+running while we're developing the web front end; it will help us see if the
+changes we make are doing what we want.
+
+Now open the main view template in a text editor C<views/index.tt> and
+completely replace the file contents with the following HTML code:
+
+     <h1>Dancr - a simple micro blog</h1>
+
+     <form action="" method="post">
+       <label>
+         Title:
+         <br>
+         <input type="text" size="30" name="title">
+       </label>
+       <br>
+       <label>
+         Text:
+         <br>
+         <textarea name="text" rows="5" cols="40"></textarea>
+       </label>
+       <br>
+       <input type="submit" value="Share">
+     </form>
+
+Just for those who might be wondering: why don't we add the C<< <html> >>,
+C<< <body> >> etc. tags here? Well, this code is actually wrapped by such
+code in the main layout file: C<views/layouts/main.tt>.
+
+Now reload the page. You should see a very basic web page with some title
+text, a text field for a blog entry title, a text field for its text and a
+submit button. It's not pretty, but it's a beginning. The best thing about
+it though is that it's I<working software> (it fulfils our initial
+requirement of a simple web form). Our goal in this tutorial will be to have
+working software the whole way through.
+
+This is a good point to make a commit and save the current state:
+
+    $ git add views/index.tt
+    $ git commit -m "Replacing default index template with micro blog form"
+    [master 9cac656] Replacing default index template with micro blog form
+     1 file changed, 23 insertions(+), 147 deletions(-)
+     rewrite views/index.tt (99%)
+
+We also still have the dancer image as the background image to our page. We
+also don't intend to use the standard dancer image in this project, so let's
+remove them from our repository:
+
+    $ git rm public/images/perldancer-bg.jpg
+    rm 'public/images/perldancer-bg.jpg'
+    $ git rm public/images/perldancer.jpg
+    rm 'public/images/perldancer.jpg'
+    $ git ci -m "Removing Perl Dancer images"
+    [master a12a38c] Removing Perl Dancer images
+     2 files changed, 0 insertions(+), 0 deletions(-)
+     delete mode 100644 public/images/perldancer-bg.jpg
+     delete mode 100644 public/images/perldancer.jpg
+
+By the way, the C<public/> directory is where Dancer2 stores static files to
+be served by the web server. That's why there are directories in here for
+CSS, images and JavaScript.
+
 =head1 The database
 
 Ok, enough about Git, let's get back to creating our micro blog. We need to
