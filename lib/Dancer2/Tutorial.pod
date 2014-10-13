@@ -293,39 +293,247 @@ your commit messages clear and descriptive!
 
 =head1 The database
 
-We're not going to spend a lot of time on the database, as it's not really
-the point of this particular tutorial.  Open your favorite L<text
-editor|http://www.vim.org> and create a schema definition called
-'schema.sql' with the following content:
+Ok, enough about Git, let's get back to creating our micro blog. We need to
+set up our database to work with our application. To do this, we need to
+create a database schema, and then connect the database to our application.
 
-  create table if not exists entries (
-    id integer primary key autoincrement,
-    title string not null,
-    text string not null
-  );
+To create the schema, open your favorite L<text editor|http://www.vim.org>
+and create a schema definition called C<schema.sql> with the following
+content:
+
+    create table if not exists entries (
+	id integer primary key autoincrement,
+	title string not null,
+	text string not null
+    );
 
 Here we have a single table with three columns: id, title, and text.  The
 'id' field is the primary key and will automatically get an ID assigned by
 the database engine when a row is inserted.
 
-We want our application to initialize the database automatically for us when
-we start it, so next, create a file called 'dancr.pl'. (The entire file is
-listed below, so don't worry about copying each of these fragments into
-'dancr.pl' as you read through this document.) We're going to put the
-following subroutines in that file:
+That's worth a commit, so add the file
 
-  sub connect_db {
-    my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('database')) or
-       die $DBI::errstr;
+    $ git add schema.sql
 
-    return $dbh;
-  }
+and commit it:
 
-  sub init_db {
+    $ git commit -m "Adding database schema"
+
+Our application file is currently called C<bin/app.pl> which isn't as
+descriptive as it could be. Let's rename the file by using Git's C<mv>
+(move) command:
+
+    $ git mv bin/app.pl bin/dancr.pl
+
+Ah, much better! This is a change to the repository and can be committed too:
+
+    $ git commit -m "Renaming main application file"
+
+=head2 Connecting to the database
+
+We now want our application to initialize the database automatically for us when
+we start it. We could just start writing code to make this work, however we
+want to be I<absolutely sure> that the code is working properly, so first,
+let's write tests to automatically check this behavior.
+
+In the C<t/> directory you'll find two test files which were added as part
+of project creation. We'll now add a third file, following the same file
+name schema as the other two, calling it C<t/003_db.t>, since this will
+contain tests of our database.  First add the boilerplate code to get things
+going:
+
+    use strict;
+    use warnings;
+
+    use Test::More tests => 1;
+
+We're using the standard testing module L<Test::More>, which we tell that it
+should expect this file to run one (and only one!) test. So what do we want
+to test? Well, we need to make sure we can make a connection to the
+database, so we want a function which connects to the database and returns a
+handle to the database. We want to do something like this:
+
     my $db = connect_db();
-    my $schema = read_file('./schema.sql');
-    $db->do($schema) or die $db->errstr;
-  }
+    ok($db, "Database connection created");
+
+where all we check for is that I<something> comes back from the
+C<connect_db()> sub.
+
+Running the tests with C<prove -lr t> shows that our test fails with the
+error message:
+
+    Undefined subroutine &main::connect_db called at t/003_db.t line 10.
+
+which tells us that C<connect_db()> can't be found. This makes sense because
+we haven't defined it yet. This is also the error that we were expecting, so
+seeing this error is actually a good thing!
+
+Notice that we have a C<lib/> directory within our project. Inside this
+directory is where all our application code is meant to go. A
+C<lib/Dancer.pm> file has already been created for us by C<dancer2> and it's
+tempting to start to define the C<connect_db()> sub in this file, just
+because it's available. However, the C<lib/Dancer.pm> file is where we want
+the web-logic to go, and not where we want the database logic to go. Hence
+we'll create a new file in a new subdirectory called C<lib/Dancr/DB.pm> and
+make a module specific to our database needs. So, create the C<lib/Dancr/>
+directory
+
+    $ mkdir lib/Dancr
+
+and create the C<lib/Dancr/DB.pm> file with the following code:
+
+    package Dancr::DB;
+
+    use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
+
+    use strict;
+    use warnings;
+    require Exporter;
+
+    @ISA = qw(Exporter);
+    @EXPORT_OK = qw();
+
+    our $VERSION = '0.1';
+
+    sub connect_db {
+    }
+
+    1;
+
+Most of this code is just boilerplate in order to define the module. What's
+important is the definition of the C<connect_db> sub. "But we just created
+an empty sub!" I hear you saying. Well, yes, this is the point. The error
+message was complaining about a missing subroutine, so we're creating it.
+Remember that the trick is to write as little code as possible to get the
+tests to work, and an empty subroutine definition is about as small as we
+can get to solve the problem of an undefined subroutine.
+
+Running the tests again, we find that the undefined subroutine error is
+still there. Looking at the test code, we see that we've forgotten to import
+the C<connect_db> sub into the namespace of our test. This is something we
+should test: namely, can we import the subroutine successfully? Thus, we
+update the number of tests to two:
+
+    use Test::More tests => 2;
+
+and add a test just before the database connection test to check that the
+sub C<connect_db> can be imported:
+
+    BEGIN { use_ok("Dancr::DB", qw(connect_db)); }
+
+For details as to why you have to wrap this in a C<BEGIN> block, please see
+the L<Test::More> documentation.
+
+Running the tests shows us now that C<connect_db> isn't exported by the
+C<Dancr::DB> module:
+
+    $ prove -lr t
+    <snip>
+    t/003_db.t ........... 1/2
+    #   Failed test 'use Dancr::DB;'
+    #   at t/003_db.t line 6.
+    #     Tried to use 'Dancr::DB'.
+    #     Error:  "connect_db" is not exported by the Dancr::DB module
+    # Can't continue after import errors at t/003_db.t line 6.
+
+We can correct this by adding subroutine name to the C<@EXPORT_OK> array in
+C<lib/Dancr/DB.pm>:
+
+    @EXPORT_OK = qw(connect_db);
+
+The tests now tell us that the database connection creation test failed:
+
+    t/003_db.t ........... 1/2
+    #   Failed test 'Database connection created'
+    #   at t/003_db.t line 9.
+    # Looks like you failed 1 test of 2.
+
+which is the test that we wanted, yay!
+
+Now let's write some I<real> code. Change the C<connect_db> code in
+C<lib/Dancr/DB.pm> to this:
+
+    use DBI;
+
+    sub connect_db {
+	my $dbh = DBI->connect("dbi:SQLite:dbname=dancr.db") or
+	die $DBI::errstr;
+
+	return $dbh;
+    }
+
+Running the tests now tells us that they all pass! This is awesome because
+we have demonstrably I<working> software. This is also an appropriate time
+for a commit and thus save the current state of the project. First add the
+new files we've created:
+
+    $ git add lib/Dancr/DB.pm t/003_db.t
+
+and then commit them:
+
+    $ git commit -m "Setting up the database connection"
+    [master 957fe7e] Setting up the database connection
+     2 files changed, 41 insertions(+)
+     create mode 100644 lib/Dancr/DB.pm
+     create mode 100644 t/003_db.t
+
+The location of the database file isn't very flexible, though. It will
+depend upon the directory from which we run the application, and that isn't
+very good: we want to ensure that it has a well known, central location. A
+reasonably good place for our project would be a C<db/> directory within the
+the main project directory. After all, you might want to have multiple
+database files, and you don't want to fill up the main project directory
+with lots of files.
+
+So let's write a test for that! Increase the number of tests to 3 in
+C<t/003_db.t>, specify the name of the database file in a variable by using
+a bit of a hack with the C<Cwd> module, remove the database file before the
+test (just in case) and test that the database file exists after running
+C<connect_db>. Hrm, that's quite a lot to describe, a diff is probably much
+more explanatory:
+
+    diff --git a/t/003_db.t b/t/003_db.t
+    index 57f6b7d..041109b 100644
+    --- a/t/003_db.t
+    +++ b/t/003_db.t
+    @@ -1,10 +1,18 @@
+     use strict;
+     use warnings;
+
+    -use Test::More tests => 2;
+    +use Test::More tests => 3;
+    +use Cwd;
+
+     BEGIN { use_ok("Dancr::DB", qw(connect_db)); }
+
+    +my $cwd = getcwd();
+    +my $dancr_db = $cwd . "/db/dancr.db";
+    +
+    +# clean up the database file in case it already exists
+    +unlink $dancr_db if (-e $dancr_db);
+    +
+     my $db = connect_db();
+     ok($db, "Database connection created");
+
+    +ok(-e $dancr_db, "Database file created ($dancr_db)");
+
+Running the tests shows us that the database file can't be created. This is
+a Good Thing (TM), as this is the failure we expected. To solve this problem
+we get to using the C<setting> feature of Dancer.
+
+
+
+... at this point the wheels fall off ...
+
+
+
+=head2 Initializing the database
+
+    sub init_db {
+        my $db = connect_db();
+        my $schema = read_file('./schema.sql');
+        $db->do($schema) or die $db->errstr;
+    }
 
 Nothing too fancy in here, I hope. Standard DBI except for the
 C<setting('database')> thing - more on that in a bit.  For now, just assume
